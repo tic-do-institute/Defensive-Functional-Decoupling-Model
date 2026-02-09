@@ -11,12 +11,12 @@ The code implements the **Gradient-based Coupled Active Inference (G-CAI) Kuramo
 
 ## 📂 Repository Structure
 
-* **`SAIM_core_simulation.py`** The core physics engine. It simulates the time-series evolution of the system, precision dynamics, and the hysteresis loop.
+* **`core_simulation.py`** The core physics engine. It simulates the time-series evolution of the system, precision dynamics, and the hysteresis loop.
    * **Generates Figure 1:** Phase dynamics, precision collapse, and recovery via Specific Informational Perturbation (SIP).
    * **Generates Figure 2:** The hysteresis loop showing the bistable region (Defensive vs. Healthy wells).
 
-* **`SAIM_sensitivity_analysis.py`** Performs a comprehensive parameter sweep to validate the topological robustness of the model.
-   * **Generates Figure 3:** Phase diagram (heatmap) of steady-state precision against Error Sensitivity ($\alpha$) and Environmental Uncertainty ($\sigma$).
+* **`sensitivity_analysis.py`** Performs a comprehensive parameter sweep to validate the topological robustness of the model.
+   * **Generates Figure S1:** Phase diagram (heatmap) of steady-state precision against Error Sensitivity ($\alpha$) and Environmental Uncertainty ($\sigma$).
 
 * **`requirements.txt`** List of Python dependencies required to run the simulations.
 
@@ -54,7 +54,7 @@ To reproduce the figures from the manuscript, simply run the Python scripts. The
 ### Reproducing Figure 1 (Dynamics) & Figure 2 (Hysteresis)
 
 ```bash
-python SAIM_core_simulation.py
+python core_simulation.py
 
 ```
 
@@ -63,11 +63,11 @@ python SAIM_core_simulation.py
 ### Reproducing Figure 3 (Robustness Analysis)
 
 ```bash
-python SAIM_sensitivity_analysis.py
+python sensitivity_analysis.py
 
 ```
 
-*Output:* `Fig3_Robustness.png`
+*Output:* `Fig.S1_Robustness.png`
 
 ---
 
@@ -75,7 +75,7 @@ python SAIM_sensitivity_analysis.py
 
 If you use this code or model in your research, please cite the accompanying manuscript (citation details will be updated upon publication).
 
-**Current Reference:** Shiga, T. (2026). *Bistable Precision Dynamics and Informational Reversal: A Computational Mechanism of Defensive Functional Decoupling*. TIC-DO Institute. (Under Review)
+**Current Reference:** Shiga, T. (2026). *Bistable Precision Dynamics and Informational Reversal: A Computational Mechanism of Defensive Functional Decoupling*. TIC-DO Institute. (Submitted)
 
 ---
 
