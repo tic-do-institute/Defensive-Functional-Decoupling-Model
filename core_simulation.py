@@ -101,7 +101,7 @@ def generate_figure1():
         noise_vec = np.ones(params.n_nodes) * base_noise
         if t_stress_start <= t < t_stress_end:
             noise_vec[target_node] += 6.0
-        
+
         sip_vec = None
         if t_sip <= t < t_sip + 0.15:
             sip_vec = np.zeros(params.n_nodes)
@@ -118,7 +118,7 @@ def generate_figure1():
 
     # Panel A: Phase Dynamics
     ax0 = fig.add_subplot(gs[0])
-    
+
     # Get time indices for color coding
     idx_start = 0
     idx_stress_end = np.searchsorted(time, t_stress_end)
@@ -128,23 +128,23 @@ def generate_figure1():
     for n in range(5):
         is_target = (n == target_node)
         y_data = np.sin(theta_hist[:, n])
-        
+
         if not is_target:
             # Plot background nodes in transparent black/gray
             ax0.plot(time, y_data, c='black', alpha=0.3, lw=0.5)
         else:
             # Target node: Change color per phase to emphasize state differences
             # 1. Homeostasis + Exposure (Red)
-            ax0.plot(time[:idx_stress_end], y_data[:idx_stress_end], 
+            ax0.plot(time[:idx_stress_end], y_data[:idx_stress_end],
                      c='#E41A1C', alpha=0.9, lw=2.5)
-            
+
             # 2. Persistence (Orange/Warning Color) - Key to visual improvement
             # Indicates "different state" via color even if waveform looks normal
-            ax0.plot(time[idx_stress_end-1:idx_sip], y_data[idx_stress_end-1:idx_sip], 
+            ax0.plot(time[idx_stress_end-1:idx_sip], y_data[idx_stress_end-1:idx_sip],
                      c='#FF7F00', alpha=0.9, lw=2.5) # Overlap slightly to prevent gaps
-            
+
             # 3. Resolution (Return to Red)
-            ax0.plot(time[idx_sip-1:], y_data[idx_sip-1:], 
+            ax0.plot(time[idx_sip-1:], y_data[idx_sip-1:],
                      c='#E41A1C', alpha=0.9, lw=2.5)
 
     ax0.set_ylabel(r"State ($\sin\theta$)")
@@ -160,7 +160,7 @@ def generate_figure1():
 
     # Panel B: Precision Dynamics
     ax1 = fig.add_subplot(gs[1])
-    
+
     # 1. Background Emphasis (Glow Effect):
     # Draw thick/transparent bands behind data to visualize the Wells
     ax1.axhline(params.g_H, c='#4DAF4A', lw=4.0, alpha=0.2, zorder=1) # Healthy Glow
@@ -176,10 +176,10 @@ def generate_figure1():
         is_target = (n == target_node)
         # Data is in the middle layer (zorder=10)
         z_ord = 10 if is_target else 2
-        
+
         ax1.plot(time, gamma_hist[:, n],
                  c='#FF7F00' if is_target else 'black',
-                 alpha=1.0 if is_target else 0.2, 
+                 alpha=1.0 if is_target else 0.2,
                  lw=1.5 if is_target else 0.5,
                  zorder=z_ord)
 
@@ -195,10 +195,10 @@ def generate_figure1():
     ax2.set_xlabel("Time (s)")
     ax2.set_title("C. Systemic Phase Transition", loc='left', fontweight='bold')
     ax2.set_xlim(0, T); ax2.set_ylim(0, 1.15)
-    
+
     # Add critical annotation explaining the Phase 3 paradox
-    ax2.text(47.5, 0.85, "Pseudo-Sync\n(High Rigidity)", ha='center', va='center', 
-             color='#FF7F00', fontsize=6, fontweight='bold', 
+    ax2.text(47.5, 0.85, "Pseudo-Sync\n(High Rigidity)", ha='center', va='center',
+             color='#FF7F00', fontsize=6, fontweight='bold',
              bbox=dict(facecolor='white', alpha=0.7, edgecolor='none', pad=0.5))
 
     # Common Decorations (Background Shading etc.)
@@ -215,76 +215,5 @@ def generate_figure1():
     plt.savefig('Fig1_Gradient_Simulation_Enhanced.png')
     print("Fig1_Gradient_Simulation_Enhanced.png Generated.")
 
-# ==============================================================================
-# 3. GENERATE FIGURE 2 (Hysteresis Loop)
-# ==============================================================================
-def generate_figure2():
-    print("Generating Figure 2 (Hysteresis Check)...")
-    
-    # NOTE: While the representative simulation here uses N=5 for computational efficiency,
-    # the phase transition topology is scale-invariant. 
-    # To reproduce the high-resolution thermodynamic limit shown in the main text,
-    # set n_nodes = 1000000.
-    params = ModelParams(n_nodes=5, dt=0.1)
-    model = GCAIKuramotoChain(params)
-    
-    sigma_fwd = np.linspace(0.0, 7.0, 50)
-    sigma_rev = np.linspace(7.0, 0.0, 50)
-    gamma_fwd = []
-    gamma_rev = []
-
-    settle_steps = 300
-    avg_window = 50
-    np.random.seed(42)
-
-    # Forward Sweep (Increasing Stress)
-    model.gamma[:] = params.g_H
-    for s in sigma_fwd:
-        gammas = []
-        for i in range(settle_steps):
-            # Apply stress globally to all nodes (Mean Field Stress).
-            # This corresponds to systemic environmental uncertainty.
-            # For N=10^6, this global coupling induces a sharp first-order phase transition.
-            noise_vec = np.ones(params.n_nodes) * np.sqrt(s) 
-            
-            model.step(noise_vec)
-            if i >= (settle_steps - avg_window):
-                gammas.append(np.mean(model.gamma)) # Record Mean Precision
-        gamma_fwd.append(np.mean(gammas))
-
-    # Reverse Sweep (Decreasing Stress)
-    for s in sigma_rev:
-        gammas = []
-        for i in range(settle_steps):
-            # Apply stress globally
-            noise_vec = np.ones(params.n_nodes) * np.sqrt(s)
-            
-            model.step(noise_vec)
-            if i >= (settle_steps - avg_window):
-                gammas.append(np.mean(model.gamma)) # Record Mean Precision
-        gamma_rev.append(np.mean(gammas))
-
-    # Plot
-    fig, ax = plt.subplots(figsize=(3.4, 2.8))
-    ax.plot(sigma_fwd, gamma_fwd, 'o-', c='#377EB8', ms=2.5, lw=1.2, label='Increasing Stress', zorder=2)
-    ax.plot(sigma_rev, gamma_rev, 'o--', c='#E41A1C', ms=2.5, lw=1.2, label='Decreasing Stress', zorder=3)
-    ax.fill_betweenx([0, 8], 2.8, 4.2, color='purple', alpha=0.1, lw=0, zorder=0)
-
-    ax.text(3.5, 1.0, "Bistable\nRegion",
-            ha='center', va='center', color='purple', fontweight='bold', fontsize=7,
-            bbox=dict(facecolor='white', alpha=0.6, edgecolor='none', pad=1))
-
-    ax.set_xlabel(r"External Uncertainty ($\sigma^2$)", fontweight='bold')
-    ax.set_ylabel(r"Mean Precision ($\langle \gamma \rangle$)", fontweight='bold')
-    ax.set_title("Hysteresis Loop: The Thermodynamic Trap", fontweight='bold', fontsize=9, pad=8)
-    ax.set_xlim(0, 7.0); ax.set_ylim(0, 7.5) # Adjusted to match data range
-    ax.grid(True, ls=':', alpha=0.5, lw=0.5)
-    ax.legend(loc='upper left', frameon=True, fontsize=6, borderpad=0.3)
-
-    plt.tight_layout()
-    plt.savefig('Fig2_PhaseDiagram_Hysteresis.png')
-    print("Fig2_PhaseDiagram_Hysteresis.png Generated.")
-
 if __name__ == "__main__":
     generate_figure1()
-    generate_figure2()
