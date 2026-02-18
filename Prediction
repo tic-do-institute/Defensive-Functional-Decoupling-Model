@@ -102,7 +102,7 @@ def run_comparison_simulation():
 # ==============================================================================
 # 3. Plotting
 # ==============================================================================
-def plot_fig4():
+def plot_fig5():
     fig = plt.figure(figsize=(7.0, 3.5))
     gs = gridspec.GridSpec(1, 2, width_ratios=[1, 1.3], wspace=0.25)
     
@@ -175,8 +175,8 @@ def plot_fig4():
     ax1.legend(h2 + h1, l2 + l1, loc='upper right', fontsize=6, frameon=True)
 
     plt.tight_layout()
-    plt.savefig('Fig4_Predictions.png')
-    print("Fig4_Predictions.png generated successfully.")
+    plt.savefig('Fig5_Predictions.png')
+    print("Fig5_Predictions.png generated successfully.")
 
 if __name__ == "__main__":
-    plot_fig4()
+    plot_fig5()
