@@ -28,9 +28,9 @@ class ModelParams:
     n_nodes: int = 5
     dt: float = 0.05
     omega: float = 1.0
-    g_L: float = 0.5   # Defensive Well
-    g_U: float = 3.0   # Barrier
-    g_H: float = 6.0   # Healthy Well
+    g_L: float = 0.5    # Defensive Well
+    g_U: float = 3.0    # Barrier
+    g_H: float = 6.0    # Healthy Well
     k_pot: float = 2.0
     alpha_error: float = 35.0
 
@@ -57,7 +57,7 @@ class GCAIKuramotoChain:
         sq_error = (diff_left**2 + diff_right**2) / neighbor_counts
 
         F_intrinsic = self._potential_force(self.gamma)
-        F_error     = - self.p.alpha_error * sq_error
+        F_error      = - self.p.alpha_error * sq_error
         d_gamma = F_intrinsic + F_error
 
         if sip_impulse is not None:
@@ -74,10 +74,10 @@ class GCAIKuramotoChain:
         return self.theta, self.gamma, np.abs(z)
 
 # ==============================================================================
-# 2. GENERATE FIGURE 1 (Time Series) - Visual Improvements Only
+# 2. GENERATE FIGURE 2 (Time Series) - Visual Improvements Only
 # ==============================================================================
-def generate_figure1():
-    print("Generating Figure 1 (Enhanced Visibility)...")
+def generate_figure2():
+    print("Generating Figure 2")
     # Data generation logic remains unchanged
     params = ModelParams(n_nodes=5, dt=0.01)
     model = GCAIKuramotoChain(params)
@@ -212,8 +212,8 @@ def generate_figure1():
 
     ax2.text(t_sip+1.5, 0.1, "SIP Impulse", color='#377EB8', fontweight='bold', fontsize=7)
 
-    plt.savefig('Fig1_Gradient_Simulation_Enhanced.png')
-    print("Fig1_Gradient_Simulation_Enhanced.png Generated.")
+    plt.savefig('Fig2_Gradient_Simulation.png')
+    print("Fig2_Gradient_Simulation.png Generated.")
 
 if __name__ == "__main__":
-    generate_figure1()
+    generate_figure2()
