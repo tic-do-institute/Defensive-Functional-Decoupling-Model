@@ -121,8 +121,8 @@ def generate_figure4():
 
             bbox=dict(facecolor='white', alpha=0.9, edgecolor='#377EB8', boxstyle='round,pad=0.3'))
 
-    # PPEN Regime
-    ax.text(25, 16.0, "PPEN Regime\n(Collapse)",
+    # Zero-Efficiency　/ Collapsed Regime
+    ax.text(25, 16.0, "Zero-Efficiency Regime\n(Collapse)",
             color='#E41A1C',
             ha='center', va='center', fontweight='bold', fontsize=8,
             bbox=dict(facecolor='white', alpha=0.9, edgecolor='#E41A1C', boxstyle='round,pad=0.3'))
